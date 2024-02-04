@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -32,8 +34,40 @@ func homeHandler(w http.ResponseWriter, request *http.Request) {
 
 }
 
+func addHandler(writer http.ResponseWriter, request *http.Request) {
+	write(writer, "Hello internet\n")
+	sum := getSum(5, 4)
+	output := fmt.Sprintf("5 + 4 = %d\n", sum)
+	write(writer, output)
+}
+
+func getSum(x, y int) int {
+	return x + y
+}
+
+func divideHandler(writer http.ResponseWriter, request *http.Request) {
+	v, err := getQuotient(5, 4)
+	if err != nil {
+		write(writer, "can't divide by zero\n")
+	} else {
+		output := fmt.Sprintf("5 / 4 = %.2f\n", v)
+		write(writer, output)
+	}
+}
+
+func getQuotient(x, y float32) (float32, error) {
+	if y == 0 {
+		err := errors.New("Cannot divide by zero")
+		return 0, err
+	} else {
+		return (x / y), nil
+	}
+}
+
 func main() {
 	http.HandleFunc("/", homeHandler)
+	http.HandleFunc("/getsum", addHandler)
+	http.HandleFunc("/divide", divideHandler)
 
 	err := http.ListenAndServe("localhost:8080", nil)
 	log.Fatal(err)
