@@ -5,14 +5,26 @@ import (
 	"net/http"
 	"text/template"
 	"webapp3/models"
+	"webapp3/pkg/config"
 
 	"github.com/justinas/nosurf"
 )
 
 var tmplCache = make(map[string]*template.Template)
 
+var app *config.AppConfig 
+
+func NewAppConfig(a *config.AppConfig) {
+	app = a
+}
+
 func AddCSRFData(pd *models.PageData, r *http.Request) *models.PageData{
 	pd.CSRFToken = nosurf.Token(r)
+
+	if app.Session.Exists(r.Context(), "user_id") {
+		pd.IsAuthenticated = 1
+		
+	}
 	return pd
 }
 

@@ -20,6 +20,9 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/", handlers.Repo.HomeHandler)
 	mux.Get("/about", handlers.Repo.AboutHandler)
 	mux.Get("/login", handlers.Repo.LoginHandler)
+	mux.Post("/login", handlers.Repo.PostLoginHandler)
+	mux.Get("/logout", handlers.Repo.LogoutHandler)
+
 	mux.Get("/page", handlers.Repo.PageHandler)
 	mux.Get("/makepost", handlers.Repo.MakePostHandler)
 
